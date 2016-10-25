@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br" ng-app='CarrinhoDeCompras'>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+<script src="src/bootstrap/js/bootstrap.min.js"></script>
+<link href="src/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="src/comum/css/estilo.css" rel="stylesheet">
+<script src="src/angular/js/carrinhoDeComprasApp.js"></script>
+<script src="src/angular/js/carrinhoDeComprasService.js"></script>
+<script src="src/angular/js/carrinhoDeComprasController.js"></script>
+<script src="src/angular/js/filter.js"></script>
+<script src="src/angular/js/angular-locale_pt-br.js"></script>
+<script src="src/comum/js/numeric.min.js"></script>
+<script src="src/comum/js/mask.min.js"></script>
+<script src="src/comum/js/form.js"></script>
+
+<title>Compras</title>
+</head>
+<body ng-controller='controller'>
+
+<header class="page-heading">
+
+	<div class="container">
+		<h1>Shop Item</h1>
+		<p>Simples sistema de compras com uma lista de produtos e um carrinho.</p>
+	</div>
+
+</header>
+
+<div class="container">
+
+	<div class="row">
+	
+        <div class="col-md-8"><p>Produtos</p>
+        
+	        <div class="row item-lista-produtos" ng-repeat='produto in listaDeProdutos track by produto.id'>
+	        
+		        <div class="col-md-8 min-height-80">
+				
+				    <div class="row">
+				        <div class="col-md-12"><span>{{produto.nome}}</span></div>
+				    </div>
+				
+				    <div class="row">
+				        <div class="col-md-12"><span>Por: {{produto.valorUnitario | currency: 'R$'}}</span></div>
+				    </div>
+				
+				</div>
+				
+				<div class="col-md-2 min-height-80"><label for="qtd">Qtd.</label><input type="number" min="1" max="{{produto.quantidade}}" class="form-control input-sm" ng-model='qtdAdc' id="qtd"></div>
+				
+				<div class="col-md-2 min-height-80 botao-vertical">
+					<button ng-click='adicionarProduto(produto.id, qtdAdc)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></button>
+				</div>
+        
+       		</div>
+       
+        </div>
+        
+        <div class="col-md-4 carrinho-compras"><p>Meu Carrinho:</p>
+        
+        <div class="row" ng-show='carrinho != null'>
+        	
+        	<div class="col-md-12">
+        	
+        	<div class="row" ng-repeat='produto_cart in carrinho.produtos track by produto_cart.id'>
+			
+				<div class="col-md-9">
+				
+					<ul style="list-style: none;">
+					  
+						<li><span>Item: {{produto_cart.nome}}</span></li>
+						<li><span>Valor Und.: {{produto_cart.valorUnitario | currency:'R$'}}</span></li>
+						<li><span>Qtd.: {{produto_cart.quantidade}}</span></li>
+					
+					</ul>
+				
+				</div>
+				
+				<div class="col-md-3">
+				
+					<button ng-click='abrirModal(produto_cart.id,produto_cart.nome, produto_cart.quantidade)' type="button" class="btn btn-default">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</button>
+				
+				</div>
+			
+			</div>
+			
+			<div class="row"><div class="col-md-12">Valor Total: {{carrinho.valorTotal | currency: 'R$'}}</div></div>
+			
+			<div class="row botao-finalizar-compra"><button type="button" class="btn btn-success" ng-click='abrirModalFinalizarCompra()'>Finalizar compra</button></div>
+        	
+        	</div>
+        
+        </div>
+	
+		</div>
+		
+	</div>
+	
+</div>
+
+<!-- Modal para excluir item do carrinho -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Carrinho de compras</h4>
+      </div>
+      <div class="modal-body">
+      
+	  <p>{{auxProduto.nome}} - Você deseja remover este produto?</p>
+	  
+      <div class="row">
+      
+      	<div class="col-md-2">
+      		<label for="qtd-remove">Qtd.</label><input maxlength="2" type="number"  min="1" max='{{auxProduto.qtdCarrinho}}' class="form-control input-sm" id="qtd-remove" ng-model='auxProduto.qtdRemover'></p>
+      	</div>
+      		<span>Quantidade no carrinho: {{auxProduto.qtdCarrinho}}</span>
+      	<div class="col-md-10">
+      	
+      	</div>
+      
+      </div>
+      
+      <div class="row">
+      	<div class="col-md-12">
+      		<label><input type="checkbox" ng-model='auxProduto.removerTodo' ng-click='controlarQtdRemovida()'>Remover todas unidades para este produto.</label>
+      	</div>
+      </div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" ng-click='removerProduto(auxProduto.id, auxProduto.qtdRemover, auxProduto.removerTodo)'>Remover</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal para finalizar compra -->
+<div class="modal fade" id="modalfinalizarPedido" tabindex="-1" role="dialog" aria-labelledby="modalfinalizarPedidoLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Finalizar Compra: Resumo carrinho de compras</h4>
+      </div>
+      <div class="modal-body">
+      
+      <div class="row"  ng-repeat='resumo_produto_cart in carrinho.produtos track by resumo_produto_cart.id'>
+      
+      	<div class="col-md-6">{{resumo_produto_cart.nome}}</div>
+      	<div class="col-md-6">{{getSubtotal(resumo_produto_cart) | currency:'R$'}}</div>
+      
+      </div>
+      
+      <div class="row">
+      
+      	<div class="col-md-12">Total a pagar: {{carrinho.valorTotal | currency:'R$'}}</div>
+      	
+      </div>
+      
+      <div class="row">
+      	<div class="col-md-12">
+      		<div class="alert alert-danger" ng-show='formularioCompra.critica.length > 0'>
+      			<div ng-repeat='critica in formularioCompra.critica'>{{critica}}</div>
+      		</div>
+      	</div>
+      </div>
+      
+      <div class="row form-group">
+      	
+		<div class="col-md-12 ">
+		
+			<div class="row">
+				<div class="col-md-12">
+					<label for="numero-cartao">Número</label>
+					<input type="text" class="form-control numeric" id="numero-cartao" ng-model="formularioCompra.nroCartao" maxlength="16">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12"><p>Validade</p></div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<label for="mes-cartao">Mês</label>
+					<select class="form-control" id="mes-cartao">
+				      <option ng-repeat='n in [1,2,3,4,5,6,7,8,9,10,11,12] '>{{n}}</option>
+				    </select>
+			    </div>
+			    <div class="col-md-6">
+			    <label for="ano-cartao">Ano</label>
+				    <select class="form-control" id="ano-cartao">
+				      <option ng-repeat='n in [2017,2018,2019,2020] '>{{n}}</option>
+				    </select>
+			    </div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+			    	<label for="nome-cartao">Nome impresso no cartão</label>
+					<input type="text" class="form-control" id="nome-cartao" ng-model="formularioCompra.nmCartao" maxlength="50">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<label for="cpf-cartao">CPF do titular</label>
+					<input type="text" class="form-control cpf-mask" id="cpf-cartao" ng-model="formularioCompra.cpf" maxlength="14">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<label for="codigo-cartao">Código de segurança</label>
+					<input type="text" class="form-control numeric" id="codigo-cartao" ng-model="formularioCompra.cdSeguranca" maxlength="3">
+				</div>
+				<div class="col-md-6">
+					<label>Parcelas</label>
+					<select class="form-control" id="parcelas-cartao">
+				      <option ng-repeat='n in [1,2,3,4,5,6,7,8,9,10,11,12] '>{{n}} x sem juros</option>
+				    </select>
+				</div>
+			</div>
+	      </div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" ng-click='finalizarCompra()'>Finalizar compra</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal para informar situação do pedido -->
+<div class="modal fade" id="statusCompraModal" tabindex="-1" role="dialog" aria-labelledby="statusCompraModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Situação do pedido</h4>
+      </div>
+      <div class="modal-body">
+      
+	  <div class="alert alert-success" role="alert">{{resumoCompra.status}}</div>
+	  <h3>Número de protocolo: {{resumoCompra.id | nroProtocolo}}</h3>
+      
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal para informar histórico de pedidos -->
+<!-- <div class="modal fade" id="statusCompraModal" tabindex="-1" role="dialog" aria-labelledby="statusCompraModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Histórico de pedidos</h4>
+      </div>
+      <div class="modal-body">
+      
+      <div ng-repeat='historico in historicos'>
+      	<div></div>
+      </div>
+      
+	  <div class="alert alert-success" role="alert">{{resumoCompra.status}}</div>
+	  <h3>Número de protocolo: {{resumoCompra.id | nroProtocolo}}</h3>
+      
+      </div>
+    </div>/.modal-content
+  </div>/.modal-dialog
+</div>/.modal -->
+
+</body>
+</html>

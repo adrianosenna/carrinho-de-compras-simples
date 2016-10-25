@@ -1,0 +1,44 @@
+.page-heading {
+    position: relative;
+    padding: 30px 15px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #0080c0;
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+
+.carrinho-compras {
+	background-color: #f7f7f9;
+	border-width: .2rem;
+    border: solid #ffffff;
+    padding: 15px;
+}
+
+.lista-produtos {
+    border-width: .2rem;
+    border: solid #f7f7f9;
+    padding: 15px;
+}
+
+.item-lista-produtos {
+	border-width: .2rem;
+    border: solid #f7f7f9;
+	padding: 10px;
+	background-color: #ffffff;
+	
+}
+
+.min-height-80 { min-height: 80px; } 
+
+.botao-vertical {
+    padding-bottom: 23px;
+	padding-top: 23px;
+	
+}
+
+.botao-finalizar-compra {
+	padding-right: 15px;
+	padding-top: 30px;
+	text-align: right;
+}

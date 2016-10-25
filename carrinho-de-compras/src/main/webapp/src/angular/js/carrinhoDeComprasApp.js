@@ -1,0 +1,1 @@
+var produtoModule = angular.module('CarrinhoDeCompras', []);

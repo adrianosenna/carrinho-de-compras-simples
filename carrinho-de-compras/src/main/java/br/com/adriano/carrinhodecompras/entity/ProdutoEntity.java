@@ -6,6 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Classe entidade de persistencia para produtos.
+ * @author Adriano
+ *
+ */
 @Entity
 @Table(name="produto")
 public class ProdutoEntity {
@@ -20,9 +25,6 @@ public class ProdutoEntity {
 	
 	@Column(name="valorUnitario")
 	private Double valorUnitario;
-	
-	@Column(name="quantidade")
-	private Integer quantidade;
 	
 	public Integer getId() {
 		return id;
@@ -46,14 +48,6 @@ public class ProdutoEntity {
 
 	public void setValorUnitario(Double valorUnitario) {
 		this.valorUnitario = valorUnitario;
-	}
-
-	public Integer getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(Integer quantidade) {
-		this.quantidade = quantidade;
 	}
 
 }

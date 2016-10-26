@@ -31,6 +31,21 @@
 
 <div class="container">
 
+	<div class="row" ng-show='mensagemErroInterno != null'>
+      	<div class="col-md-12">
+      		<div class="alert alert-danger">
+      			{{mensagemErroInterno}}
+      		</div>
+      	</div>
+      </div>
+      <div class="row" ng-show='mensagemOpercaoSucesso != null'>
+      	<div class="col-md-12">
+      		<div class="alert alert-success">
+      			{{mensagemOpercaoSucesso}}
+      		</div>
+      	</div>
+      </div>
+
 	<div class="row">
 	
         <div class="col-md-8"><p>Produtos</p>
@@ -49,10 +64,10 @@
 				
 				</div>
 				
-				<div class="col-md-2 min-height-80"><label for="qtd">Qtd.</label><input type="number" min="1" max="{{produto.quantidade}}" class="form-control input-sm" ng-model='qtdAdc' id="qtd"></div>
+				<div class="col-md-2 min-height-80"><label for="qtd">Qtd.</label><input maxlength="2" type="number" min="1" max="{{qtdPrdoutoControle}}" class="form-control input-sm" ng-model='qtdProdutoAdiconado' id="qtd"></div>
 				
 				<div class="col-md-2 min-height-80 botao-vertical">
-					<button ng-click='adicionarProduto(produto.id, qtdAdc)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></button>
+					<button ng-click='adicionarProduto(produto.id, qtdProdutoAdiconado)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></button>
 				</div>
         
        		</div>
@@ -61,7 +76,7 @@
         
         <div class="col-md-4 carrinho-compras"><p>Meu Carrinho:</p>
         
-        <div class="row" ng-show='carrinho != null'>
+        <div class="row" ng-show='carrinho != null && carrinho.produtos != null && carrinho.produtos.length > 0'>
         	
         	<div class="col-md-12">
         	
@@ -252,28 +267,6 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<!-- Modal para informar histórico de pedidos -->
-<!-- <div class="modal fade" id="statusCompraModal" tabindex="-1" role="dialog" aria-labelledby="statusCompraModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Histórico de pedidos</h4>
-      </div>
-      <div class="modal-body">
-      
-      <div ng-repeat='historico in historicos'>
-      	<div></div>
-      </div>
-      
-	  <div class="alert alert-success" role="alert">{{resumoCompra.status}}</div>
-	  <h3>Número de protocolo: {{resumoCompra.id | nroProtocolo}}</h3>
-      
-      </div>
-    </div>/.modal-content
-  </div>/.modal-dialog
-</div>/.modal -->
 
 </body>
 </html>

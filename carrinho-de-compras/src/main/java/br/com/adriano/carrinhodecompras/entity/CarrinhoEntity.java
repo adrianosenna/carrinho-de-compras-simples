@@ -10,6 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+/**
+ * Classe entidade de persistencia para carrinho de compras
+ * @author Adriano
+ */
 @Entity
 @Table(name="carrinho")
 public class CarrinhoEntity {
@@ -25,6 +29,9 @@ public class CarrinhoEntity {
 	
 	@Column(name="qtd_produto")
 	private Integer quantidade;
+	
+	@Column
+	private String status;
 
 	public ProdutoEntity getProdutoEntity() {
 		return produtoEntity;
@@ -48,6 +55,14 @@ public class CarrinhoEntity {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

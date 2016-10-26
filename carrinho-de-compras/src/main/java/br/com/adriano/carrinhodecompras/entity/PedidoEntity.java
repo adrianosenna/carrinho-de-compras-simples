@@ -7,6 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Classe entidade de persistencia para registor de compra
+ * @author Adriano
+ */
 @Entity
 @Table(name="pedido")
 public class PedidoEntity {

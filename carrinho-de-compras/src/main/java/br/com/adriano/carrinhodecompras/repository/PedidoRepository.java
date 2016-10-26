@@ -14,19 +14,32 @@ public class PedidoRepository {
 	
 	public PedidoRepository() {
 		
-		this.entityManagerFactory = Persistence.createEntityManagerFactory("persistence_unit_db_compras");
+		this.entityManagerFactory = Persistence.createEntityManagerFactory("persistence_unit_db_carrinho_de_compras");
 		 
 		this.entityManager = this.entityManagerFactory.createEntityManager();
 		
 	}
 	
-	public PedidoEntity salvarPedido(PedidoEntity entity){
+	public PedidoEntity salvarPedido(PedidoEntity entity) throws Exception{
 		
-		this.entityManager.getTransaction().begin();
-		this.entityManager.persist(entity);
-		this.entityManager.flush();
-		this.entityManager.getTransaction().commit();
-		return entity;
+		try {
+			
+			this.entityManager.getTransaction().begin();
+			this.entityManager.persist(entity);
+			this.entityManager.getTransaction().commit();
+			
+			return entity;
+			
+		} catch (Exception e) {
+
+			this.entityManager.getTransaction().rollback();
+			//Fazer o log do erro
+			e.printStackTrace();
+			//Gerar mensagem de erro
+			throw new Exception("Ocorreu um erro ao tentar salvar o pedido.");
+			
+		} 
+		
 	}
 
 }
